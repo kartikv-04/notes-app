@@ -14,6 +14,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/notes', require('./routes/noteRoutes'));
 
 // Basic Route
 app.get('/', (req, res) => {
