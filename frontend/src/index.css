@@ -1,1 +1,49 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Aptos", "Segoe UI", "Trebuchet MS", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-sans);
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.55);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.7);
+}
