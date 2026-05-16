@@ -56,3 +56,17 @@ npm run dev
 ## Database Schema
 - users: id, username, password, created_at.
 - notes: id, user_id, title, description, status (todo, inprogress, done), created_at, updated_at.
+
+## Deployment
+
+### Backend (Railway)
+1. **Connect Repository**: Point Railway to the `backend/` directory.
+2. **Environment Variables**: Add `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`, `JWT_SECRET`, and `FRONTEND_URL`.
+3. **Start Command**: Railway will use `npm start` (defined as `node src/index.js`).
+
+### Frontend (Vercel / Netlify)
+1. **Connect Repository**: Point your host to the `frontend/` directory.
+2. **Build Settings**:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+3. **Environment Variables**: Add `VITE_API_URL` (pointing to your backend's `/api` endpoint).
