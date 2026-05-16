@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X } from 'lucide-react';
 import { STATUS_ORDER, STATUS_META } from '../lib/constants';
 
 function createInitialForm(note, defaultStatus) {
@@ -27,92 +28,87 @@ function NoteModal({ isOpen, note, defaultStatus, onClose, onSave, isSaving }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4 py-8 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-[32px] border border-white/80 bg-white p-6 shadow-[0_30px_120px_rgba(15,23,42,0.18)] md:p-8">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-500">
-              {note ? 'Update note' : 'Create note'}
-            </p>
-            <h2 className="mt-2 text-3xl font-black text-slate-900">
-              {note ? 'Edit your note' : 'Add a fresh note'}
-            </h2>
-          </div>
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-[2px]">
+      <div className="w-full max-w-lg rounded-xl border border-slate-200 bg-white shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+          <h2 className="text-lg font-bold text-slate-900">
+            {note ? 'Edit Note' : 'Create Note'}
+          </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 transition hover:border-slate-300 hover:text-slate-800"
+            className="rounded-xl p-2 text-slate-400 transition hover:bg-primary-50 hover:text-primary-600"
           >
-            Close
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-slate-700">Title</span>
-            <input
-              type="text"
-              value={form.title}
-              onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-              placeholder="UI polish checklist"
-            />
-          </label>
+        <form className="p-6 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Title</span>
+              <input
+                type="text"
+                value={form.title}
+                onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10"
+                placeholder="What's this about?"
+                autoFocus
+              />
+            </label>
 
-          <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-slate-700">Description</span>
-            <textarea
-              rows="5"
-              value={form.description}
-              onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-              placeholder="Write the note description here..."
-            />
-          </label>
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-400">Description</span>
+              <textarea
+                rows="4"
+                value={form.description}
+                onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 resize-none"
+                placeholder="Details..."
+              />
+            </label>
 
-          <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-slate-700">Status</span>
-            <div className="grid gap-3 md:grid-cols-3">
-              {STATUS_ORDER.map((status) => {
-                const meta = STATUS_META[status];
-                const isActive = form.status === status;
+            <div className="block">
+              <span className="mb-3 block text-xs font-bold uppercase tracking-wider text-slate-400">Status</span>
+              <div className="grid gap-2 grid-cols-3">
+                {STATUS_ORDER.map((status) => {
+                  const meta = STATUS_META[status];
+                  const isActive = form.status === status;
 
-                return (
-                  <button
-                    key={status}
-                    type="button"
-                    onClick={() => setForm((current) => ({ ...current, status }))}
-                    className={`rounded-2xl border px-4 py-4 text-left transition ${
-                      isActive
-                        ? 'border-indigo-300 bg-indigo-50 shadow-sm'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`h-3 w-3 rounded-full ${meta.dotClass}`} />
-                      <span className="font-bold text-slate-900">{meta.label}</span>
-                    </div>
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => setForm((current) => ({ ...current, status }))}
+                      className={`flex flex-col items-center gap-2 rounded-xl border p-3 transition-all ${
+                        isActive
+                          ? 'border-primary-600 bg-primary-600 text-white shadow-md shadow-primary-200'
+                          : 'border-slate-100 bg-slate-50 text-slate-500 hover:border-primary-200'
+                      }`}
+                    >
+                      <span className={`h-2 w-2 rounded-full ${isActive ? 'bg-white' : meta.dotClass}`} />
+                      <span className="text-[10px] font-bold uppercase tracking-wide">{meta.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </label>
+          </div>
 
-          <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+          <div className="flex gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-primary-50 hover:border-primary-200 hover:text-primary-700"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex-1 rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary-200 transition hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
             >
-              {isSaving ? 'Saving...' : note ? 'Save changes' : 'Create note'}
+              {isSaving ? 'Saving...' : note ? 'Save Changes' : 'Create Note'}
             </button>
           </div>
         </form>

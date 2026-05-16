@@ -5,7 +5,7 @@ import ViewTabs from './ViewTabs';
 import NotesBoard from './NotesBoard';
 import NotesList from './NotesList';
 import NoteModal from './NoteModal';
-import { ExportIcon, FilterIcon, PlusIcon, SortIcon } from './Icons';
+import { Download, Filter, Plus, LayoutGrid, Columns, Rows, List, Search } from 'lucide-react';
 import { STATUS_META } from '../lib/constants';
 import { downloadNotesAsJson } from '../lib/helpers';
 
@@ -21,16 +21,30 @@ function DashboardLayout({
   onMoveNote,
 }) {
   const [viewMode, setViewMode] = useState('board');
+  const [subViewMode, setSubViewMode] = useState('grid');
+  const [sortBy, setSortBy] = useState('newest');
+  const [filterBy, setFilterBy] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [modalState, setModalState] = useState({ isOpen: false, note: null, defaultStatus: 'todo' });
   const [isSaving, setIsSaving] = useState(false);
   const [actionError, setActionError] = useState('');
   const [draggedNoteId, setDraggedNoteId] = useState(null);
 
-  const filteredNotes = notes.filter((note) => {
-    const haystack = `${note.title} ${note.description} ${STATUS_META[note.status]?.label ?? ''}`.toLowerCase();
-    return haystack.includes(searchQuery.trim().toLowerCase());
-  });
+
+  const filteredNotes = notes
+    .filter((note) => {
+      const haystack = `${note.title} ${note.description} ${STATUS_META[note.status]?.label ?? ''}`.toLowerCase();
+      const matchesSearch = haystack.includes(searchQuery.trim().toLowerCase());
+      const matchesFilter = filterBy === 'all' || note.status === filterBy;
+      return matchesSearch && matchesFilter;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'newest') return new Date(b.created_at) - new Date(a.created_at);
+      if (sortBy === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
+      if (sortBy === 'title') return a.title.localeCompare(b.title);
+      return 0;
+    });
+
 
   async function handleSaveNote(values) {
     setIsSaving(true);
@@ -80,118 +94,163 @@ function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.14),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(34,197,94,0.10),_transparent_26%),linear-gradient(180deg,#f8fafc_0%,#f5f7ff_100%)]">
-      <div className="mx-auto flex max-w-[1600px]">
-        <Sidebar user={user} />
+    <div className="flex min-h-screen bg-[#f8fafc] font-sans">
+      <Sidebar user={user} onLogout={onLogout} />
 
-        <main className="min-w-0 flex-1">
-          <TopBar
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onLogout={onLogout}
-          />
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <TopBar user={user} />
 
-          <section className="border-b border-white/80 px-5 py-6 md:px-8">
-            <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-              <div className="flex items-start gap-5">
-                <div className="flex h-24 w-24 items-center justify-center rounded-[30px] bg-gradient-to-br from-indigo-100 via-violet-100 to-cyan-100 shadow-inner shadow-white/80">
-                  <div className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500" />
-                </div>
-
+        <main className="flex-1 overflow-y-auto p-5 md:p-8">
+          <div className="mx-auto max-w-7xl">
+            <header className="mb-8 space-y-6">
+              {/* Row 1: Title and Main Actions */}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-500">
-                    Frontend Workspace
+                  <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Notes Board</h1>
+                  <p className="mt-1 text-sm font-medium text-slate-500">
+                    Manage your project tasks and ideas efficiently.
                   </p>
-                  <h1 className="mt-2 text-4xl font-black text-slate-900">GoMindz Notes Board</h1>
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
-                    A clean notes workspace with list and Kanban views, drag-and-drop status updates, and assignment-aligned CRUD flows.
-                  </p>
-                  <div className="mt-5">
-                    <ViewTabs value={viewMode} onChange={setViewMode} />
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => downloadNotesAsJson(filteredNotes)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Export</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setModalState({ isOpen: true, note: null, defaultStatus: 'todo' })}
+                    className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-primary-200 transition hover:bg-primary-700 active:scale-95"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Add New</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Row 2: Search and Filters */}
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-y border-slate-100 py-6">
+                <div className="relative block w-full lg:max-w-md">
+                  <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search anything..."
+                    className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 outline-none transition focus:border-primary-600 focus:ring-4 focus:ring-primary-600/10 shadow-sm"
+                  />
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
+                    <Filter className="h-3.5 w-3.5 text-slate-400" />
+                    <select
+                      value={filterBy}
+                      onChange={(e) => setFilterBy(e.target.value)}
+                      className="bg-transparent text-sm font-bold text-slate-600 outline-none"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="todo">To Do</option>
+                      <option value="inprogress">In Progress</option>
+                      <option value="done">Done</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
+                    <span className="text-xs font-bold text-slate-400">Sort:</span>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="bg-transparent text-sm font-bold text-slate-600 outline-none"
+                    >
+                      <option value="newest">Newest</option>
+                      <option value="oldest">Oldest</option>
+                      <option value="title">Alphabetical</option>
+                    </select>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
-                >
-                  <FilterIcon className="h-4 w-4" />
-                  Filter
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
-                >
-                  <SortIcon className="h-4 w-4" />
-                  Sort
-                </button>
-                <button
-                  type="button"
-                  onClick={() => downloadNotesAsJson(filteredNotes)}
-                  className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-3 text-sm font-semibold text-indigo-600 transition hover:border-indigo-200 hover:text-indigo-700"
-                >
-                  <ExportIcon className="h-4 w-4" />
-                  Export
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setModalState({ isOpen: true, note: null, defaultStatus: 'todo' })}
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:translate-y-[-1px]"
-                >
-                  <PlusIcon className="h-4 w-4" />
-                  Add Note
-                </button>
-              </div>
-            </div>
-          </section>
-
-          <section className="px-5 py-6 md:px-8">
-            {notesError || actionError ? (
-              <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-600">
-                {actionError || notesError}
-              </div>
-            ) : null}
-
-            {isLoading ? (
-              <div className="grid gap-6 xl:grid-cols-3">
-                {[1, 2, 3].map((column) => (
-                  <div key={column} className="rounded-[30px] border border-slate-200/80 bg-white/70 p-4">
-                    <div className="mb-4 h-8 w-40 animate-pulse rounded-full bg-slate-100" />
-                    <div className="space-y-4">
-                      {[1, 2].map((card) => (
-                        <div key={card} className="rounded-[28px] border border-slate-200/70 bg-white p-5">
-                          <div className="h-5 w-24 animate-pulse rounded-full bg-slate-100" />
-                          <div className="mt-5 h-7 w-2/3 animate-pulse rounded-full bg-slate-100" />
-                          <div className="mt-4 h-20 animate-pulse rounded-2xl bg-slate-100" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              {/* Row 3: View Toggles */}
+              <div className="flex items-center gap-1.5">
+                {[
+                  { id: 'grid', icon: LayoutGrid, label: 'Grid', view: 'board' },
+                  { id: 'column', icon: Columns, label: 'Column', view: 'board' },
+                  { id: 'row', icon: Rows, label: 'Row', view: 'list' },
+                  { id: 'list', icon: List, label: 'List', view: 'list' },
+                ].map((mode) => (
+                  <button
+                    key={mode.id}
+                    type="button"
+                    onClick={() => {
+                      setSubViewMode(mode.id);
+                      setViewMode(mode.view);
+                    }}
+                    className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-bold transition-all ${
+                      subViewMode === mode.id
+                        ? 'bg-primary-600 text-white shadow-md shadow-primary-100'
+                        : 'text-slate-500 hover:bg-white hover:text-slate-900 border border-transparent hover:border-slate-200'
+                    }`}
+                  >
+                    <mode.icon className="h-3.5 w-3.5" />
+                    <span>{mode.label}</span>
+                  </button>
                 ))}
               </div>
-            ) : viewMode === 'board' ? (
-              <NotesBoard
-                notes={filteredNotes}
-                onCreateNote={(status) => setModalState({ isOpen: true, note: null, defaultStatus: status })}
-                onEditNote={(note) => setModalState({ isOpen: true, note, defaultStatus: note.status })}
-                onDeleteNote={handleDeleteNote}
-                onMoveNote={handleDrop}
-                onDragStart={setDraggedNoteId}
-                onDragEnd={() => setDraggedNoteId(null)}
-              />
-            ) : (
-              <NotesList
-                notes={filteredNotes}
-                onCreateNote={(status) => setModalState({ isOpen: true, note: null, defaultStatus: status })}
-                onEditNote={(note) => setModalState({ isOpen: true, note, defaultStatus: note.status })}
-                onDeleteNote={handleDeleteNote}
-                onDragStart={setDraggedNoteId}
-                onDragEnd={() => setDraggedNoteId(null)}
-              />
-            )}
-          </section>
+            </header>
+
+            <section className="flex-1 overflow-auto px-5 pb-8 md:px-8">
+              {notesError || actionError ? (
+                <div className="mb-6 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-600">
+                  {actionError || notesError}
+                </div>
+              ) : null}
+
+              {isLoading ? (
+                <div className="grid gap-6 xl:grid-cols-3">
+                  {[1, 2, 3].map((column) => (
+                    <div key={column} className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+                      <div className="mb-4 h-6 w-32 animate-pulse rounded-md bg-slate-200" />
+                      <div className="space-y-4">
+                        {[1, 2].map((card) => (
+                          <div key={card} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <div className="h-4 w-20 animate-pulse rounded-md bg-slate-100" />
+                            <div className="mt-4 h-6 w-2/3 animate-pulse rounded-md bg-slate-100" />
+                            <div className="mt-3 h-16 animate-pulse rounded-md bg-slate-100" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : viewMode === 'board' ? (
+                <NotesBoard
+                  notes={filteredNotes}
+                  subViewMode={subViewMode}
+                  onCreateNote={(status) => setModalState({ isOpen: true, note: null, defaultStatus: status })}
+                  onEditNote={(note) => setModalState({ isOpen: true, note, defaultStatus: note.status })}
+                  onDeleteNote={handleDeleteNote}
+                  onMoveNote={handleDrop}
+                  onDragStart={setDraggedNoteId}
+                  onDragEnd={() => setDraggedNoteId(null)}
+                />
+              ) : (
+                <NotesList
+                  notes={filteredNotes}
+                  subViewMode={subViewMode}
+                  onCreateNote={(status) => setModalState({ isOpen: true, note: null, defaultStatus: status })}
+                  onEditNote={(note) => setModalState({ isOpen: true, note, defaultStatus: note.status })}
+                  onDeleteNote={handleDeleteNote}
+                  onDragStart={setDraggedNoteId}
+                  onDragEnd={() => setDraggedNoteId(null)}
+                />
+              )}
+            </section>
+          </div>
         </main>
       </div>
 

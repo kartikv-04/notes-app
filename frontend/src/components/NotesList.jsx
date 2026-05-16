@@ -1,7 +1,7 @@
 import EmptyState from './EmptyState';
 import NoteCard from './NoteCard';
 
-function NotesList({ notes, onCreateNote, onEditNote, onDeleteNote, onDragStart, onDragEnd }) {
+function NotesList({ notes, subViewMode = 'row', onCreateNote, onEditNote, onDeleteNote, onDragStart, onDragEnd }) {
   if (!notes.length) {
     return (
       <EmptyState
@@ -13,13 +13,15 @@ function NotesList({ notes, onCreateNote, onEditNote, onDeleteNote, onDragStart,
     );
   }
 
+  const variant = subViewMode === 'row' ? 'list' : 'compact';
+
   return (
-    <div className="space-y-4">
+    <div className={subViewMode === 'row' ? "space-y-4" : "space-y-2"}>
       {notes.map((note) => (
         <NoteCard
           key={note.id}
           note={note}
-          variant="list"
+          variant={variant}
           onEdit={onEditNote}
           onDelete={onDeleteNote}
           onDragStart={onDragStart}

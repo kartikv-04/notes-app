@@ -33,111 +33,158 @@ function AuthScreen({
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.24),_transparent_30%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_45%,#f8fafc_100%)] px-5 py-8">
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <section className="rounded-[36px] border border-white/70 bg-white/75 p-8 shadow-[0_30px_100px_rgba(79,70,229,0.12)] backdrop-blur xl:p-12">
-          <div className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-2xl font-black text-white shadow-lg shadow-indigo-300/60">
+    <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-slate-100 bg-white/80 px-6 py-4 backdrop-blur-md">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 font-display text-xl font-black text-white shadow-sm">
             G
           </div>
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-indigo-500">
-            GoMindz Notes
-          </p>
-          <h1 className="max-w-xl text-4xl font-black leading-tight text-slate-900 md:text-5xl">
-            Pixel-clean notes, list views, and Kanban flow in one workspace.
-          </h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
-            Sign in to manage notes, drag them across stages, and keep the assignment UI feeling sharp on both desktop and mobile.
-          </p>
+          <span className="font-display text-xl font-bold tracking-tight text-slate-900">
+            GoMindz
+          </span>
+        </div>
+        <div className="hidden items-center gap-8 text-sm font-medium text-slate-500 md:flex">
+          <a href="#" className="transition hover:text-slate-900">
+            Features
+          </a>
+          <a href="#" className="transition hover:text-slate-900">
+            Security
+          </a>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full bg-slate-50 px-4 py-1.5 text-slate-900 ring-1 ring-slate-200 transition hover:bg-slate-100"
+          >
+            Github
+          </a>
+        </div>
+      </nav>
 
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {[
-              ['List + Board', 'Switch between overview cards and Kanban columns.'],
-              ['Immediate Sync', 'Drops update on screen first, then persist to the API.'],
-              ['Responsive UI', 'A layout built to stay clean at smaller widths too.'],
-            ].map(([title, description]) => (
-              <article
-                key={title}
-                className="rounded-3xl border border-slate-200/70 bg-white/80 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]"
-              >
-                <h2 className="text-base font-bold text-slate-900">{title}</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-[36px] border border-slate-200/70 bg-white p-8 shadow-[0_30px_100px_rgba(15,23,42,0.08)]">
-          <div className="inline-flex rounded-full bg-slate-100 p-1">
-            <button
-              type="button"
-              onClick={() => handleModeChange('login')}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                mode === 'login' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
-              }`}
-            >
-              Login
-            </button>
-            <button
-              type="button"
-              onClick={() => handleModeChange('register')}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                mode === 'register' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
-              }`}
-            >
-              Register
-            </button>
-          </div>
-
-          <div className="mt-8">
-            <h2 className="text-3xl font-black text-slate-900">
-              {mode === 'login' ? 'Welcome back' : 'Create your account'}
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-500">
-              {mode === 'login'
-                ? 'Use your username and password to access the notes workspace.'
-                : 'Register once and you will be signed in automatically.'}
+      {/* Main Content */}
+      <main className="flex flex-col items-center justify-center px-6 pt-32 pb-20">
+        <div className="w-full max-w-[440px] animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="mb-10 text-center">
+            <h1 className="mb-3 font-display text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
+              Capture ideas at the speed of thought.
+            </h1>
+            <p className="text-lg text-slate-500">
+              The workspace for minimalists who value speed, clarity, and focus.
             </p>
           </div>
 
-          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-            <label className="block">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">Username</span>
-              <input
-                type="text"
-                value={form.username}
-                onChange={(event) => setForm((current) => ({ ...current, username: event.target.value }))}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                placeholder="Enter your username"
-              />
-            </label>
+          <div className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+            <div className="mb-8 flex rounded-2xl bg-slate-50 p-1.5">
+              <button
+                type="button"
+                onClick={() => handleModeChange('login')}
+                className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${
+                  mode === 'login'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                Sign in
+              </button>
+              <button
+                type="button"
+                onClick={() => handleModeChange('register')}
+                className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${
+                  mode === 'register'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                Join now
+              </button>
+            </div>
 
-            <label className="block">
-              <span className="mb-2 block text-sm font-semibold text-slate-700">Password</span>
-              <input
-                type="password"
-                value={form.password}
-                onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-300 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                placeholder="Enter your password"
-              />
-            </label>
-
-            {error ? (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-600">
-                {error}
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="space-y-2">
+                <label className="ml-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoComplete="username"
+                  value={form.username}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, username: event.target.value }))
+                  }
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                  placeholder="Enter username"
+                />
               </div>
-            ) : null}
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-70"
+              <div className="space-y-2">
+                <label className="ml-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                  value={form.password}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, password: event.target.value }))
+                  }
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              {error ? (
+                <div className="animate-in fade-in zoom-in-95 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600 duration-200">
+                  {error}
+                </div>
+              ) : null}
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="group relative w-full overflow-hidden rounded-2xl bg-slate-900 py-4 text-sm font-bold text-white transition-all hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 shadow-xl shadow-slate-200"
+              >
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Securing workspace...
+                  </span>
+                ) : mode === 'login' ? (
+                  'Sign in to GoMindz'
+                ) : (
+                  'Create your account'
+                )}
+              </button>
+            </form>
+          </div>
+
+          <p className="mt-8 text-center text-sm text-slate-400">
+            By continuing, you agree to our{' '}
+            <a
+              href="#"
+              className="text-slate-600 underline underline-offset-4 transition hover:text-slate-900"
             >
-              {isLoading ? 'Please wait...' : mode === 'login' ? 'Login to workspace' : 'Register and continue'}
-            </button>
-          </form>
-        </section>
-      </div>
+              Terms of Service
+            </a>{' '}
+            and{' '}
+            <a
+              href="#"
+              className="text-slate-600 underline underline-offset-4 transition hover:text-slate-900"
+            >
+              Privacy Policy
+            </a>
+            .
+          </p>
+        </div>
+      </main>
+
+      <footer className="pointer-events-none fixed bottom-0 left-0 right-0 flex justify-center p-8">
+        <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-300">
+          Built for clarity • GoMindz Notes 2026
+        </div>
+      </footer>
     </div>
   );
 }

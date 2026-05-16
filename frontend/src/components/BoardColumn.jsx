@@ -1,5 +1,5 @@
 import NoteCard from './NoteCard';
-import { PlusIcon } from './Icons';
+import { Plus } from 'lucide-react';
 import { STATUS_META } from '../lib/constants';
 
 function BoardColumn({
@@ -21,26 +21,26 @@ function BoardColumn({
         onMoveNote(status);
         onDragEnd();
       }}
-      className="rounded-[30px] border border-slate-200/80 bg-white/70 p-4 shadow-[0_24px_80px_rgba(15,23,42,0.06)] backdrop-blur"
+      className="rounded-xl border border-slate-200 bg-slate-50/50 p-4"
     >
       <div className="mb-4 flex items-center justify-between gap-3 px-1">
-        <div className="flex items-center gap-3">
-          <span className={`h-3 w-3 rounded-full ${meta.dotClass}`} />
-          <h2 className="text-2xl font-black text-slate-900">{meta.label}</h2>
-          <span className="text-lg font-bold text-slate-300">({notes.length})</span>
+        <div className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${meta.dotClass}`} />
+          <h2 className="text-sm font-bold text-slate-900">{meta.label}</h2>
+          <span className="text-xs font-medium text-slate-400">{notes.length}</span>
         </div>
 
         <button
           type="button"
           onClick={() => onCreateNote(status)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-indigo-200 hover:text-indigo-600"
-          aria-label={`Add note in ${meta.label}`}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-slate-900 hover:text-slate-900 shadow-sm"
+          title={`Add to ${meta.label}`}
         >
-          <PlusIcon className="h-5 w-5" />
+          <Plus className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {notes.map((note) => (
           <NoteCard
             key={note.id}
@@ -57,4 +57,3 @@ function BoardColumn({
 }
 
 export default BoardColumn;
-
