@@ -1,6 +1,6 @@
-const express = require('express');
-const { getNotes, createNote, updateNote, deleteNote } = require('../controllers/noteController');
-const authMiddleware = require('../middleware/authMiddleware');
+import express from 'express';
+import { getNotes, createNote, updateNote, deleteNote } from '../controllers/noteController.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 // All note routes require authentication
@@ -11,4 +11,4 @@ router.post('/', createNote);
 router.put('/:id', updateNote);
 router.delete('/:id', deleteNote);
 
-module.exports = router;
+export default router;

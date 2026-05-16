@@ -1,4 +1,4 @@
-const pool = require('./db');
+import pool from './db.js';
 
 const createUsersTableQuery = `
   CREATE TABLE IF NOT EXISTS users (
@@ -97,4 +97,4 @@ async function ensureSchema() {
   await ensureNotesCompatibility();
 }
 
-module.exports = ensureSchema;
+export default ensureSchema;

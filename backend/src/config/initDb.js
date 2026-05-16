@@ -1,4 +1,4 @@
-const ensureSchema = require('./ensureSchema');
+import ensureSchema from './ensureSchema.js';
 
 async function initDb() {
   try {

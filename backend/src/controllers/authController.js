@@ -1,10 +1,10 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const pool = require('../config/db');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import pool from '../config/db.js';
 
 // @desc Register a new user
 // @route POST /api/auth/register
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
 
 // @desc Login user
 // @route POST /api/auth/login
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {

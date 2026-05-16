@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+import pool from '../config/db.js';
 
 const VALID_STATUSES = ['todo', 'inprogress', 'done'];
 
@@ -26,7 +26,7 @@ const normalizeStatus = (status) => {
 
 // @desc Get all user notes
 // @route GET /api/notes
-exports.getNotes = async (req, res) => {
+export const getNotes = async (req, res) => {
   const userId = req.user.id;
 
   try {
@@ -43,7 +43,7 @@ exports.getNotes = async (req, res) => {
 
 // @desc Create a new note
 // @route POST /api/notes
-exports.createNote = async (req, res) => {
+export const createNote = async (req, res) => {
   const { title } = req.body;
   const description = req.body.description ?? req.body.content ?? '';
   const status = normalizeStatus(req.body.status) || 'todo';
@@ -75,7 +75,7 @@ exports.createNote = async (req, res) => {
 
 // @desc Update a note
 // @route PUT /api/notes/:id
-exports.updateNote = async (req, res) => {
+export const updateNote = async (req, res) => {
   const { title } = req.body;
   const hasDescription = Object.prototype.hasOwnProperty.call(req.body, 'description')
     || Object.prototype.hasOwnProperty.call(req.body, 'content');
@@ -115,7 +115,7 @@ exports.updateNote = async (req, res) => {
 
 // @desc Delete a note
 // @route DELETE /api/notes/:id
-exports.deleteNote = async (req, res) => {
+export const deleteNote = async (req, res) => {
   const noteId = req.params.id;
   const userId = req.user.id;
 
